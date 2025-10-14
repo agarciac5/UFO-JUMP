@@ -3,10 +3,22 @@ using UnityEngine;
 public class UFOController : MonoBehaviour
 {
 
-    public float jumpVelocity = 7.0f;
+    //Parametros para rotacion:
+    public float rotationSpeed = 50f;
+
+    //Parametros para el salto:
+    public float jumpForce = 6.5f;
+    public float holdForce = 10f;
+    public float holdDuration = 0.15f;
+
+    //parametros para gravedad
+    public float fallMultiplier = 2.8f;
+    public float lowJumpMultiplier = 2.0f;
+    
     Rigidbody rb;
     int lives = 1;
-    bool jumpRequested = false;
+    bool isJumping = false;
+    float jumpTime = 0f;
 
     void Start()
     {
@@ -22,11 +34,34 @@ public class UFOController : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-        if (Input.GetKeyDown(KeyCode.Space))
+        //rotacion
+        transform.Rotate(0f, 0f, rotationSpeed * Time.deltaTime);
+        //inicio del salto
+        if (Input.GetKeyDown(KeyCode.Space) && !isJumping)
         {
-            jumpRequested = true;
-        }
+            isJumping = true;
+            jumpTime = 0f;
 
+ Vector3 vel = rb.linearVelocity;
+    vel.y = 0f;
+    rb.linearVelocity = vel;
+
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.VelocityChange);
+        }
+        //impulso extra
+         if (isJumping && Input.GetKey(KeyCode.Space))
+        {
+            jumpTime += Time.deltaTime;
+
+            if (jumpTime < holdDuration)
+            {
+                rb.AddForce(Vector3.up * holdForce * Time.deltaTime, ForceMode.Acceleration);
+            }
+        }
+        if (Input.GetKeyUp(KeyCode.Space))
+        {
+            isJumping = false;
+        }
 
     }
 
@@ -37,14 +72,15 @@ public class UFOController : MonoBehaviour
             return;
         }
 
-        if (jumpRequested)
+         if (rb.linearVelocity.y < 0)
         {
-            Vector3 actualVelocity = rb.linearVelocity;
-            actualVelocity.y = jumpVelocity;
-            rb.linearVelocity = actualVelocity;
-
-            jumpRequested = false;
-
+            // Cayendo → aumenta la gravedad (segunda parábola)
+            rb.linearVelocity += Vector3.up * Physics.gravity.y * (fallMultiplier - 1) * Time.fixedDeltaTime;
+        }
+        else if (rb.linearVelocity.y > 0 && !Input.GetKey(KeyCode.Space))
+        {
+            // Soltó el botón mientras sube → baja antes (salto corto)
+            rb.linearVelocity += Vector3.up * Physics.gravity.y * (lowJumpMultiplier - 1) * Time.fixedDeltaTime;
         }
 
 
