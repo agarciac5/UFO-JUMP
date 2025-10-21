@@ -14,6 +14,8 @@ GameObject:
   - component: {fileID: 3231145346866326240}
   - component: {fileID: 2649226723653802900}
   - component: {fileID: 6212414252047308116}
+  - component: {fileID: 2678867316374585461}
+  - component: {fileID: 4851514950726037811}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -158,3 +160,36 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2678867316374585461
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8675791706132352939}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e07a470b34cfbf048b3e38b907e6d9ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationSpeed: 50
+  jumpForce: 7
+  holdForce: 15
+  holdDuration: 0.2
+  fallMultiplier: 2.2
+  lowJumpMultiplier: 1.6
+--- !u!114 &4851514950726037811
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8675791706132352939}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2272e8f7a17d324faeba892c9305848, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inclinationAngle: 15
+  inclinationSpeed: 2
+  rotationSpeed: 50
