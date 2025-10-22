@@ -6,7 +6,9 @@ public class PortalEvent1 : MonoBehaviour
     public Renderer portalRenderer;      // Renderer del portal
     public float openDuration = 2f;      // Tiempo que tarda en abrir
     public float stayOpenTime = 1f;      // Tiempo que se queda abierto
-    public float closeDuration = 2f;     // Tiempo que tarda en cerrar
+    public float closeDuration = 2f;
+    
+    public float delayBeforeStart = 1.5f;    
     public GameObject objectToSpawn;     // Objeto que aparece del portal
 
     private Material portalMat;
@@ -22,7 +24,7 @@ public class PortalEvent1 : MonoBehaviour
     }
 
     private System.Collections.IEnumerator PortalSequence()
-    {
+    {    yield return new WaitForSeconds(delayBeforeStart);
         // Abrir portal
         yield return StartCoroutine(ChangeDissolve(1f, 0.341f, openDuration));
 

@@ -1,4 +1,5 @@
 using UnityEngine;
+using TMPro;
 
 public class UFOController : MonoBehaviour
 {
@@ -14,6 +15,10 @@ public class UFOController : MonoBehaviour
     //parametros para gravedad
     public float fallMultiplier = 2.8f;
     public float lowJumpMultiplier = 2.0f;
+
+    //Score
+    public TextMeshProUGUI  scoreText;
+    public float score = 0f;
     
     Rigidbody rb;
     int lives = 1;
@@ -23,6 +28,10 @@ public class UFOController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        if (scoreText != null)
+        {
+            scoreText.text = "Score: " + score.ToString("0");
+        }
 
     }
 
@@ -34,6 +43,14 @@ public class UFOController : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+        //aumento de score con el tiempo
+        score += Time.deltaTime * 10;
+        if (scoreText != null)
+        {
+            scoreText.text = "Score: " + Mathf.FloorToInt(score).ToString();
+        }
+
+
         //rotacion
         transform.Rotate(0f, 0f, rotationSpeed * Time.deltaTime);
         //inicio del salto
