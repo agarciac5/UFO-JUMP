@@ -17,14 +17,18 @@ public class UFOController : MonoBehaviour
     public float lowJumpMultiplier = 2.0f;
 
     //Score
-    public TextMeshProUGUI  scoreText;
+    public TextMeshProUGUI scoreText;
+    public TextMeshProUGUI  LivesText;
     public float score = 0f;
     
     Rigidbody rb;
-    int lives = 1;
+    public int lives = 3;
+    public int maxLives = 5;
     bool isJumping = false;
     float jumpTime = 0f;
-
+    public float immuneDuration = 2f;
+    private bool isImmune = false;
+    private float immuneTimer = 0f;
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -38,11 +42,30 @@ public class UFOController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         if (lives <= 0)
         {
             Destroy(gameObject);
             return;
         }
+        if (LivesText != null)
+        {
+            LivesText.text = "Lives: " + lives.ToString();
+        }
+
+        if (lives > maxLives)
+        {
+            lives = maxLives;
+        }
+        if (isImmune)
+    {
+        immuneTimer -= Time.deltaTime;
+        if (immuneTimer <= 0f)
+        {
+            isImmune = false;
+        }
+    }
+
         //aumento de score con el tiempo
         score += Time.deltaTime * 10;
         if (scoreText != null)
@@ -88,6 +111,10 @@ public class UFOController : MonoBehaviour
         {
             return;
         }
+        if (lives > maxLives)
+        {
+            lives = maxLives;
+        }
 
          if (rb.linearVelocity.y < 0)
         {
@@ -103,10 +130,14 @@ public class UFOController : MonoBehaviour
 
     }
     private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Obstacle"))
+{
+        if (collision.gameObject.CompareTag("Obstacle") && !isImmune)
         {
-            lives= lives - 1;
+            lives = lives - 1;               // Restar vida
+            isImmune = true;          // Activar inmunidad
+            immuneTimer = immuneDuration;
         }
-    }
+        
+     
+}
 }

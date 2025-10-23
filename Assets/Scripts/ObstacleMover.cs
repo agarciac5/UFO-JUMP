@@ -1,14 +1,17 @@
 using UnityEngine;
+using System.Collections;
+
 
 public class ObstacleMove : MonoBehaviour
 {
 
     public float speed = 2.0f;
-    public float extraDistance = 3f;
+    public float extraDistance = 5f;
     public Transform player;
     private bool directionLocked = false;  // ya decidimos la dirección?
-    private float dirX = 1f; 
+    private float dirX = 1f;
     private float destroyX;
+    private bool shrinking = false;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
     void Awake()
@@ -24,11 +27,11 @@ public class ObstacleMove : MonoBehaviour
         // Encontrar al UFO por tag "Player"
         var go = GameObject.FindGameObjectWithTag("Player");
         if (go != null) player = go.transform;
-        
+
     }
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
@@ -38,7 +41,7 @@ public class ObstacleMove : MonoBehaviour
 
         // mover la caja hacia la posición del jugador
         //transform.position = Vector3.MoveTowards(transform.position, player.position, speed * Time.deltaTime);
-       if (player == null) return;
+        if (player == null || shrinking) return;
 
         // Fijar dirección y punto de destrucción solo una vez
         if (!directionLocked)
@@ -58,5 +61,34 @@ public class ObstacleMove : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    } 
+
+private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            StartCoroutine(ShrinkAndDestroy());
+        }
     }
+
+    private IEnumerator ShrinkAndDestroy()
+    {
+        shrinking = true;
+        Vector3 originalScale = transform.localScale;
+        float duration = 0.5f;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / duration;
+            transform.localScale = Vector3.Lerp(originalScale, Vector3.zero, t);
+            yield return null;
+        }
+
+        Destroy(gameObject);
+    }
+
+
+
 }
