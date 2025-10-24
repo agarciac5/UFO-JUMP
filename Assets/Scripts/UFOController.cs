@@ -3,7 +3,7 @@ using TMPro;
 
 public class UFOController : MonoBehaviour
 {
-
+    
     //Parametros para rotacion:
     public float rotationSpeed = 50f;
 
@@ -18,9 +18,9 @@ public class UFOController : MonoBehaviour
 
     //Score
     public TextMeshProUGUI scoreText;
-    public TextMeshProUGUI  LivesText;
+    public TextMeshProUGUI LivesText;
     public float score = 0f;
-    
+
     Rigidbody rb;
     public int lives = 3;
     public int maxLives = 5;
@@ -29,6 +29,9 @@ public class UFOController : MonoBehaviour
     public float immuneDuration = 2f;
     private bool isImmune = false;
     private float immuneTimer = 0f;
+    [HideInInspector] public bool hasShield = false;
+    private GameObject activeShield;
+  
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -58,13 +61,13 @@ public class UFOController : MonoBehaviour
             lives = maxLives;
         }
         if (isImmune)
-    {
-        immuneTimer -= Time.deltaTime;
-        if (immuneTimer <= 0f)
         {
-            isImmune = false;
+            immuneTimer -= Time.deltaTime;
+            if (immuneTimer <= 0f)
+            {
+                isImmune = false;
+            }
         }
-    }
 
         //aumento de score con el tiempo
         score += Time.deltaTime * 10;
@@ -82,14 +85,14 @@ public class UFOController : MonoBehaviour
             isJumping = true;
             jumpTime = 0f;
 
- Vector3 vel = rb.linearVelocity;
-    vel.y = 0f;
-    rb.linearVelocity = vel;
+            Vector3 vel = rb.linearVelocity;
+            vel.y = 0f;
+            rb.linearVelocity = vel;
 
             rb.AddForce(Vector3.up * jumpForce, ForceMode.VelocityChange);
         }
         //impulso extra
-         if (isJumping && Input.GetKey(KeyCode.Space))
+        if (isJumping && Input.GetKey(KeyCode.Space))
         {
             jumpTime += Time.deltaTime;
 
@@ -116,7 +119,7 @@ public class UFOController : MonoBehaviour
             lives = maxLives;
         }
 
-         if (rb.linearVelocity.y < 0)
+        if (rb.linearVelocity.y < 0)
         {
             // Cayendo → aumenta la gravedad (segunda parábola)
             rb.linearVelocity += Vector3.up * Physics.gravity.y * (fallMultiplier - 1) * Time.fixedDeltaTime;
@@ -130,14 +133,47 @@ public class UFOController : MonoBehaviour
 
     }
     private void OnCollisionEnter(Collision collision)
-{
+    {
         if (collision.gameObject.CompareTag("Obstacle") && !isImmune)
         {
+
+            if (hasShield && activeShield != null)
+            {
+                Destroy(activeShield);
+                hasShield = false;
+                return;
+            }
+
+
+
             lives = lives - 1;               // Restar vida
             isImmune = true;          // Activar inmunidad
             immuneTimer = immuneDuration;
         }
-        
-     
-}
+
+
+    }
+
+
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Shield") && !hasShield)
+        {
+            Shield shieldPickup = other.GetComponent<Shield>();
+            if (shieldPickup != null && shieldPickup.shieldVisualPrefab != null)
+            {
+                activeShield = Instantiate(shieldPickup.shieldVisualPrefab, transform.position, Quaternion.identity);
+
+            // Hacer que siga al jugador cada frame
+            FollowPlayer follow = activeShield.AddComponent<FollowPlayer>();
+            follow.player = transform;
+            follow.offset = new Vector3(0f, 0.5f, 0f);
+                hasShield = true;
+                Destroy(other.gameObject);
+            }
+        }
+    }
+   
+
 }

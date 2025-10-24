@@ -11,7 +11,7 @@ public class MainMenu : MonoBehaviour
     }
     public void Infinity()
     {
-        SceneManager.LoadScene("Infinity Mode"); 
+        SceneManager.LoadScene("Infinity"); 
     }
     
     
