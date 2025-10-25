@@ -3,11 +3,15 @@ using UnityEngine.SceneManagement;
 
 public class LevelManager : MonoBehaviour
 {
+    
+    public GameObject NextLevelPanel;
     public UFOController player;
     public float scoreToNextLevel = 500f;
     void start()
     {
-       scoreToNextLevel = 500f;
+        scoreToNextLevel = 500f;
+        if (NextLevelPanel != null)
+            NextLevelPanel.SetActive(false);
     }
 
     void Update()
@@ -20,12 +24,12 @@ public class LevelManager : MonoBehaviour
     }
     public void LoadNextLevel()
     {
-        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
-        SceneManager.LoadScene(currentSceneIndex + 1);
+        if (NextLevelPanel != null)
+        {
+            NextLevelPanel.SetActive(true);
+            Time.timeScale = 0f;
+        }
     }
 
-    public void RestartLevel()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-    }
+    
 }

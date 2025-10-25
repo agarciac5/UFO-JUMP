@@ -1,9 +1,9 @@
 using UnityEngine;
 
-public class Shield: MonoBehaviour
+public class Inmunity: MonoBehaviour
 {
 
-    public GameObject shieldVisualPrefab;
+    public GameObject inmunityVisualPrefab;
 
   
     public float rotationSpeed = 60f;

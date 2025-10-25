@@ -40,14 +40,14 @@ Shader "Unlit/Portal"
             #pragma fragment frag
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
-            // --- Texturas ---
+           
             TEXTURE2D(_MainTex);        SAMPLER(sampler_MainTex);
             TEXTURE2D(_MaskTex);        SAMPLER(sampler_MaskTex);
 
             float4 _MainTex_ST;
             float4 _MaskTex_ST;
 
-            // --- Propiedades ---
+          
             float4 _Color;
             float4 _EmissionColor;
             float _Speed;
@@ -98,34 +98,33 @@ Shader "Unlit/Portal"
                 float2 center = float2(0.5, 0.5);
                 float2 uv = IN.uv;
 
-                // Zoom global del portal
+              
                 float2 scaledUV = (uv - 0.5) * _PortalScale + 0.5;
 
-                // Rotación base
+               
                 float spin = t + (_RandomizeSpin > 0.5 ? sin(uv.x * 10 + _Time.y) * 0.5 : 0);
                 float2 rotatedUV = RotateUV(scaledUV, spin, center);
 
-                // --- Distorsión tipo espiral real ---
+               
                 float2 delta = rotatedUV - center;
                 float radius = length(delta);
                 float angle = atan2(delta.y, delta.x);
 
-                // distorsión ondulante
+               
                 angle += sin(radius * _PatternStrength * 0.1 + _Time.y * _Speed) * 0.5;
 
                 float2 swirlUV = center + float2(cos(angle), sin(angle)) * radius;
 
-                // --- Texturas y máscara ---
+               
                 float4 texColor = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, swirlUV);
                 float mask = SAMPLE_TEXTURE2D(_MaskTex, sampler_MaskTex, IN.uvMask).r;
 
-                // Corte circular
+              
                 clip(mask - 0.1);
 
-                // Dissolve suave
                 float dissolve = smoothstep(_DissolveAmount - 0.1, _DissolveAmount + 0.1, mask);
 
-                // Base y emisión
+                
                 float3 baseColor = texColor.rgb * _Color.rgb;
                 float glow = pow(saturate(1.0 - mask), 2.0);
                 float3 emission = _EmissionColor.rgb * glow * _EmissionIntensity;

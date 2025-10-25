@@ -1,24 +1,24 @@
 using UnityEngine;
 using TMPro;
 
-public class UFOController : MonoBehaviour
+public class UFOControllerCopy : MonoBehaviour
 {
     private GameManager gameManager;
-    //Parametros para rotacion:
+   
     public float rotationSpeed = 50f;
 
-    //Parametros para el salto:
+   
     public float jumpForce = 6.5f;
     public float holdForce = 10f;
     public float holdDuration = 0.15f;
 
-    //parametros para gravedad
+  
     public float fallMultiplier = 2.8f;
     public float lowJumpMultiplier = 2.0f;
 
-    //Score
+    
     public TextMeshProUGUI scoreText;
-
+ 
     public float score = 0f;
 
     Rigidbody rb;
@@ -33,10 +33,9 @@ public class UFOController : MonoBehaviour
     private GameObject activeShield;
     private GameObject activeInmunityShield;
     public Inmunity inmunityData;
-
+  
     void Start()
-    {
-        gameManager = FindFirstObjectByType<GameManager>();
+    {   gameManager = FindFirstObjectByType<GameManager>();
         rb = GetComponent<Rigidbody>();
         if (scoreText != null)
         {
@@ -50,23 +49,30 @@ public class UFOController : MonoBehaviour
     {
 
         if (lives <= 0)
-        {
+        {   
             if (gameManager != null)
             {
                 gameManager.GameOver();
-
+              
             }
             Destroy(gameObject);
             return;
         }
-
+       
 
         if (lives > maxLives)
         {
             lives = maxLives;
         }
+        if (isImmune)
+        {
+            immuneTimer -= Time.deltaTime;
+            if (immuneTimer <= 0f)
+            {  
+                isImmune = false;
+            }
+        }
 
-        HandleImmunity();
         //aumento de score con el tiempo
         score += Time.deltaTime * 10;
         if (scoreText != null)
@@ -112,7 +118,12 @@ public class UFOController : MonoBehaviour
         {
             return;
         }
-
+        if (!isImmune && activeInmunityShield != null)
+        {
+            Destroy(activeInmunityShield);
+                
+            return;
+        }
         if (lives > maxLives)
         {
             lives = maxLives;
@@ -120,12 +131,12 @@ public class UFOController : MonoBehaviour
 
         if (rb.linearVelocity.y < 0)
         {
-          
+            
             rb.linearVelocity += Vector3.up * Physics.gravity.y * (fallMultiplier - 1) * Time.fixedDeltaTime;
         }
         else if (rb.linearVelocity.y > 0 && !Input.GetKey(KeyCode.Space))
         {
-          
+           
             rb.linearVelocity += Vector3.up * Physics.gravity.y * (lowJumpMultiplier - 1) * Time.fixedDeltaTime;
         }
 
@@ -142,15 +153,15 @@ public class UFOController : MonoBehaviour
                 hasShield = false;
                 return;
             }
-
+            
 
 
 
             lives = lives - 1;
-            isImmune = true;
-
+            isImmune = true;      
+            
             immuneTimer = immuneDuration;
-            if (inmunityData != null && inmunityData.inmunityVisualPrefab != null)
+             if (inmunityData != null && inmunityData.inmunityVisualPrefab != null)
             {
                 activeInmunityShield = Instantiate(inmunityData.inmunityVisualPrefab, transform.position, Quaternion.identity);
 
@@ -158,7 +169,7 @@ public class UFOController : MonoBehaviour
                 follow.player = transform;
                 follow.offset = new Vector3(0f, 0.5f, 0f);
             }
-
+                
         }
 
 
@@ -175,34 +186,15 @@ public class UFOController : MonoBehaviour
             {
                 activeShield = Instantiate(shieldPickup.shieldVisualPrefab, transform.position, Quaternion.identity);
 
-
-                FollowPlayer follow = activeShield.AddComponent<FollowPlayer>();
-                follow.player = transform;
-                follow.offset = new Vector3(0f, 0.5f, 0f);
+            
+            FollowPlayer follow = activeShield.AddComponent<FollowPlayer>();
+            follow.player = transform;
+            follow.offset = new Vector3(0f, 0.5f, 0f);
                 hasShield = true;
                 Destroy(other.gameObject);
             }
         }
     }
+   
 
-
-
-void HandleImmunity()
-    {
-        if (isImmune)
-        {
-            immuneTimer -= Time.deltaTime;
-
-            if (immuneTimer <= 0f)
-            {
-                isImmune = false;
-                immuneTimer = 0f;
-
-                if (activeInmunityShield != null)
-                {
-                    Destroy(activeInmunityShield);
-                }
-            }
-        }
-    }
 }

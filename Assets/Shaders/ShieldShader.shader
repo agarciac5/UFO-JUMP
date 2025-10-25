@@ -2,8 +2,8 @@ Shader "Custom/ShieldFresnel_Energy"
 {
     Properties
     {
-        _Color ("Base Color", Color) = (0, 1, 0, 0.2) // Verde translúcido
-        _FresnelColor ("Fresnel Color", Color) = (0.3, 1.0, 0.3, 1) // Verde brillante en bordes
+        _Color ("Base Color", Color) = (0, 1, 0, 0.2) 
+        _FresnelColor ("Fresnel Color", Color) = (0.3, 1.0, 0.3, 1) 
         _FresnelPower ("Fresnel Power", Range(0.5, 8)) = 2
         _FresnelIntensity ("Fresnel Intensity", Range(0, 5)) = 2.5
         _PulseSpeed ("Pulse Speed", Range(0, 10)) = 2
@@ -60,21 +60,21 @@ Shader "Custom/ShieldFresnel_Energy"
                 float3 viewDir = normalize(_WorldSpaceCameraPos - i.worldPos);
                 float3 norm = normalize(i.normal);
 
-                // --- Fresnel básico ---
+          
                 float fresnel = pow(saturate(1.0 - dot(viewDir, norm)), _FresnelPower);
                 float4 fresnelCol = _FresnelColor * (fresnel * _FresnelIntensity);
 
-                // --- Pulso dinámico (efecto de respiración energética) ---
+             
                 float pulse = 0.5 + 0.5 * sin(_Time.y * _PulseSpeed);
                 float pulseAmt = lerp(1.0, 1.0 + _PulseStrength, pulse);
 
-                // --- Color y brillo ---
+           
                 float3 baseCol = _Color.rgb * 0.5;
                 float3 finalCol = baseCol + fresnelCol.rgb * pulseAmt * _EmissionBoost;
 
-                // --- Transparencia controlada ---
+          
                 float alpha = saturate(_Color.a + fresnel * 0.6);
-                alpha *= 0.2; // Más transparente aún
+                alpha *= 0.2; 
 
                 return float4(finalCol, alpha);
             }

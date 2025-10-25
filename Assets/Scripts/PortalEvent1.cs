@@ -3,41 +3,40 @@ using UnityEngine;
 public class PortalEvent1 : MonoBehaviour
 {
     [Header("Portal Settings")]
-    public Renderer portalRenderer;      // Renderer del portal
-    public float openDuration = 2f;      // Tiempo que tarda en abrir
-    public float stayOpenTime = 1f;      // Tiempo que se queda abierto
+    public Renderer portalRenderer;     
+    public float openDuration = 2f;      
+    public float stayOpenTime = 1f;     
     public float closeDuration = 2f;
     
     public float delayBeforeStart = 1.5f;    
-    public GameObject objectToSpawn;     // Objeto que aparece del portal
+    public GameObject objectToSpawn;     
 
     private Material portalMat;
 
     void Start()
     {
-        // Obtener el material y cerrarlo al inicio
         portalMat = portalRenderer.material;
-        portalMat.SetFloat("_DissolveAmount", 2f); // cerrado al inicio
+        portalMat.SetFloat("_DissolveAmount", 2f);
 
-        // Iniciar la secuencia automáticamente
+       
         StartCoroutine(PortalSequence());
     }
 
     private System.Collections.IEnumerator PortalSequence()
     {    yield return new WaitForSeconds(delayBeforeStart);
-        // Abrir portal
+        
         yield return StartCoroutine(ChangeDissolve(1f, 0.341f, openDuration));
 
-        // Esperar mientras el portal está abierto
+      
         yield return new WaitForSeconds(stayOpenTime);
 
-        // Sacar objeto
+   
         if (objectToSpawn)
         {
             Instantiate(objectToSpawn, transform.position, Quaternion.identity);
         }
 
-        // Cerrar portal
+    
         yield return StartCoroutine(ChangeDissolve(0.347f, 2f, closeDuration));
     }
 

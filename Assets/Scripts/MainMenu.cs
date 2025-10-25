@@ -7,7 +7,7 @@ public class MainMenu : MonoBehaviour
 
     public void PlayGame()
     {
-        SceneManager.LoadScene("ElementsDev");
+        SceneManager.LoadScene("Level 1");
     }
     public void Infinity()
     {
