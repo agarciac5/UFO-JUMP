@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: M_CometTrail
-  m_Shader: {fileID: 4800000, guid: c37f7845eb8042d4caed90c5fcf079e9, type: 3}
+  m_Shader: {fileID: 4800000, guid: 604803fa921fd8847b8bdd108c30946f, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -26,7 +26,7 @@ Material:
   - MOTIONVECTORS
   - DepthOnly
   - SHADOWCASTER
-  m_LockedProperties: _NoiseTex
+  m_LockedProperties: _Alpha _NoiseTex
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -93,6 +93,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _AddPrecomputedVelocity: 0
+    - _Alpha: 1
     - _AlphaClip: 0
     - _AlphaToMask: 0
     - _Blend: 2
@@ -132,7 +133,7 @@ Material:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _ColorHead: {r: 0.91764706, g: 0.9607843, b: 1, a: 1}
-    - _ColorTail: {r: 0.3529412, g: 0.64705884, b: 1, a: 1}
+    - _ColorTail: {r: 0.058049075, g: 0.9924528, b: 0.9640567, a: 1}
     - _EmissionColor: {r: 0.7141043, g: 6.0075464, b: 5.563949, a: 1}
     - _NoiseScale: {r: 2, g: 1, b: 0, a: 0}
     - _NoiseSpeed: {r: 0.5, g: 0, b: 0, a: 0}

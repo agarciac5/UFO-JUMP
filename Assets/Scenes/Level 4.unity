@@ -1320,7 +1320,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 615101043351256971, guid: c9864ad6321c56146a0fee269066e7b9, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.971
+      value: -0.973
       objectReference: {fileID: 0}
     - target: {fileID: 615101043351256971, guid: c9864ad6321c56146a0fee269066e7b9, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1328,7 +1328,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 615101043351256971, guid: c9864ad6321c56146a0fee269066e7b9, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.1017
+      value: 0.102
       objectReference: {fileID: 0}
     - target: {fileID: 615101043351256971, guid: c9864ad6321c56146a0fee269066e7b9, type: 3}
       propertyPath: m_LocalRotation.w
@@ -2010,6 +2010,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   obstacleTag: Obstacle
+  alsoAffectTags:
+  - Shield
   multiply: 1.5
   add: 2
   rescanEverySeconds: 0.5
