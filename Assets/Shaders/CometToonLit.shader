@@ -5,20 +5,20 @@ Shader "Universal Render Pipeline/CometToonLit"
         _BaseMap        ("Albedo", 2D) = "white" {}
         _BaseColor      ("Base Color", Color) = (0.9,0.9,0.9,1)
 
-        // Toon
+        
         _RampThreshold  ("Ramp Threshold", Range(0,1)) = 0.5
         _RampSmooth     ("Ramp Smoothness", Range(0.001,0.5)) = 0.1
 
-        // Rim (borde iluminado tipo toon)
+        
         _RimColor       ("Rim Color (HDR)", Color) = (1,1,1,1)
         _RimPower       ("Rim Power", Range(0.5,8)) = 2.5
         _RimStrength    ("Rim Strength", Range(0,2)) = 0.6
 
-        // Emission que combine con la estela
+        
         _TrailTint      ("Trail Tint (HDR)", Color) = (0.6,0.8,1,1)
         _EmissionStrength("Emission Strength", Range(0,8)) = 3.0
 
-        // Outline toon
+        
         _OutlineColor   ("Outline Color", Color) = (0,0,0,1)
         _OutlineWidth   ("Outline Width", Range(0,0.02)) = 0.006
     }
@@ -31,7 +31,7 @@ Shader "Universal Render Pipeline/CometToonLit"
             "Queue"="Geometry"
         }
 
-        // ---------- PASS PRINCIPAL (Toon + Emission) ----------
+        
         Pass
         {
             Name "ForwardToon"
@@ -88,30 +88,30 @@ Shader "Universal Render Pipeline/CometToonLit"
 
             half4 frag (Varyings IN) : SV_Target
             {
-                // Datos básicos
+                
                 float3 N = normalize(IN.normalWS);
                 float3 V = normalize(GetCameraPositionWS() - IN.positionWS);
 
-                // Luz principal URP (sin sombras para mantenerlo simple/toon)
+                
                 Light mainLight = GetMainLight();
                 float NdotL = saturate(dot(N, mainLight.direction));
 
-                // Ramp toon: umbral + suavizado
+                
                 float edge1 = _RampThreshold - _RampSmooth;
                 float edge2 = _RampThreshold + _RampSmooth;
                 float ramp  = smoothstep(edge1, edge2, NdotL);
 
-                // Albedo
+                
                 float4 albedo = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, IN.uv) * _BaseColor;
 
-                // Iluminación toon (dos bandas) + color de luz
+                
                 float3 lit = albedo.rgb * (0.25 + 0.75 * ramp) * mainLight.color;
 
-                // Rim toon (borde brillante hacia cámara)
+                
                 float rim = pow(1.0 - saturate(dot(N, V)), _RimPower) * _RimStrength;
                 float3 rimCol = _RimColor.rgb * rim;
 
-                // Emission para "brillo" que combine con la estela
+                
                 float3 emission = _TrailTint.rgb * _EmissionStrength;
 
                 float3 finalCol = lit + rimCol + emission;
@@ -121,11 +121,11 @@ Shader "Universal Render Pipeline/CometToonLit"
             ENDHLSL
         }
 
-        // ---------- PASS OUTLINE (contorno estilo cartoon) ----------
+        
         Pass
         {
             Name "Outline"
-            Cull Front      // dibuja caras invertidas
+            Cull Front      
             ZWrite On
             ZTest LEqual
             Blend One Zero
@@ -154,7 +154,7 @@ Shader "Universal Render Pipeline/CometToonLit"
             Varyings vert (Attributes IN)
             {
                 Varyings OUT;
-                // Extruir en normal de objeto para grosor constante
+                
                 float3 posOS = IN.positionOS.xyz + normalize(IN.normalOS) * _OutlineWidth;
                 float3 posWS = TransformObjectToWorld(posOS);
                 OUT.positionHCS = TransformWorldToHClip(posWS);

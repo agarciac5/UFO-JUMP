@@ -28,9 +28,9 @@ Shader "Universal Render Pipeline/CometTrailUnlit"
         Pass
         {
             Name "FORWARD_UNLIT"
-            Blend One One       // Additive
+            Blend One One       
             ZWrite Off
-            Cull Off            // two-sided
+            Cull Off            
             ZTest LEqual
 
             HLSLPROGRAM
@@ -43,7 +43,7 @@ Shader "Universal Render Pipeline/CometTrailUnlit"
             struct Attributes
             {
                 float4 positionOS : POSITION;
-                float2 uv         : TEXCOORD0; // Trail/quad UV: U=largo, V=ancho
+                float2 uv         : TEXCOORD0; 
             };
 
             struct Varyings
@@ -79,28 +79,28 @@ Shader "Universal Render Pipeline/CometTrailUnlit"
             {
                 float2 uv = IN.uv;
 
-                // Ruido paneado (opcional)
+                
                 float2 nUV = uv * _NoiseScale.xy + (_Time.x * _NoiseSpeed.xy);
                 float nSample = SAMPLE_TEXTURE2D(_NoiseTex, sampler_NoiseTex, nUV).r;
                 nSample = lerp(0.6, 1.0, saturate(nSample)); // contraste suave
 
-                // Máscara a lo largo: se apaga hacia la cola (U -> 1)
+                
                 float maskLong = pow(saturate(1.0 - uv.x), _TailTightness);
 
-                // Máscara lateral: bordes suaves (V centrado)
-                float vCentered = abs( (uv.y - 0.5) * 2.0 ); // 0 centro, 1 bordes
+                
+                float vCentered = abs( (uv.y - 0.5) * 2.0 ); 
                 float maskSide = smoothstep(1.0, 1.0 - _EdgeFade, 1.0 - vCentered);
 
-                // Color de cabeza a cola
+               
                 float3 col = lerp(_ColorHead.rgb, _ColorTail.rgb, saturate(uv.x));
 
-                // Alpha final
+                
                 float alpha = _OverallAlpha * maskLong * maskSide;
 
-                // Emission (brillo)
+                
                 float3 emissive = col * _EmissionBoost * nSample;
 
-                // Additive: el alpha no afecta la suma, pero lo devolvemos para debug/compat.
+                
                 return float4(emissive * alpha, alpha);
             }
             ENDHLSL

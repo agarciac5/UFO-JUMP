@@ -18,7 +18,7 @@ Shader "Universal Render Pipeline/UFO/CometTrailURP"
             Name "Unlit"
             Tags { "LightMode"="UniversalForward" }
 
-            // aditivo, sin ZWrite y doble cara (lo normal para trails brillantes)
+            
             Blend One One
             ZWrite Off
             Cull Off
@@ -63,12 +63,12 @@ Shader "Universal Render Pipeline/UFO/CometTrailURP"
 
             half4 frag (Varyings IN) : SV_Target
             {
-                // 1 = cabeza (cerca del emisor), 0 = cola; invierte si tu trail lo necesita
+                
                 half t = saturate(1.0 - IN.uv.y);
                 half3 grad = lerp(_ColorTail.rgb, _ColorHead.rgb, t);
                 half3 tex  = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, IN.uv).rgb;
                 half3 col  = grad * tex * _Alpha;
-                return half4(col, 0); // aditivo
+                return half4(col, 0); 
             }
             ENDHLSL
         }
