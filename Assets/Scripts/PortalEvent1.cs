@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class PortalEvent1 : MonoBehaviour
 {
-    [Header("Portal Settings")]
-    public Renderer portalRenderer;     
+   
+    public Renderer portalRenderer;     //acceder material del portal
     public float openDuration = 2f;      
     public float stayOpenTime = 1f;     
     public float closeDuration = 2f;
@@ -43,10 +43,10 @@ public class PortalEvent1 : MonoBehaviour
     private System.Collections.IEnumerator ChangeDissolve(float start, float end, float duration)
     {
         float t = 0f;
-        while (t < duration)
+        while (t <duration)
         {
             t += Time.deltaTime;
-            float val = Mathf.Lerp(start, end, t / duration);
+            float val = Mathf.Lerp(start, end, t/duration);
             portalMat.SetFloat("_DissolveAmount", val);
             yield return null;
         }

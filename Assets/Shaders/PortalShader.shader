@@ -80,7 +80,7 @@ Shader "Unlit/Portal"
                 return OUT;
             }
 
-            // --- Rotación UV básica ---
+           
             float2 RotateUV(float2 uv, float angle, float2 center)
             {
                 float s = sin(angle);
